@@ -1,17 +1,17 @@
-import { View, Image, Text } from "react-native";
-import { styles } from "./styles";
+import { View, Image, Text } from 'react-native'
+import { styles } from './styles'
 
-type TvShowDetailsProperties = {
-    name: string;
-    image: string;
-    description: string;
-    seasons: number;
-    nextEpisode: string;
-    isFavorite: boolean;
+interface TvShowDetailsProperties {
+  name: string
+  image: string
+  description: string
+  seasons: number
+  nextEpisode: string
+  isFavorite: boolean
 }
 
-export function TvShowDetails({ name, image, description, seasons, nextEpisode, isFavorite }: TvShowDetailsProperties) {
-    return (
+export function TvShowDetails ({ name, image, description, seasons, nextEpisode, isFavorite }: TvShowDetailsProperties) {
+  return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
                 <Image style={styles.image} source={{ uri: image }} />
@@ -30,5 +30,5 @@ export function TvShowDetails({ name, image, description, seasons, nextEpisode, 
                 <Text style={styles.description}>{description}</Text>
             </View>
         </View>
-    )
+  )
 }

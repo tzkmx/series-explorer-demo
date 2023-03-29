@@ -1,14 +1,14 @@
-import { FlatList, View, Text } from "react-native";
-import { FavoriteShowProps } from "./Favorites";
-import { styles } from "./styles";
-import { TvShow } from "./TvShow";
+import { FlatList, View, Text } from 'react-native'
+import { type FavoriteShowProps } from './Favorites'
+import { styles } from './styles'
+import { TvShow } from './TvShow'
 
-type AiringLastEpisodesShowListProps = {
-    episodes: FavoriteShowProps[];
+interface AiringLastEpisodesShowListProps {
+  episodes: FavoriteShowProps[]
 }
 
-export function AiringLastEpisodesScreen({ episodes }: AiringLastEpisodesShowListProps) {
-    return (
+export function AiringLastEpisodesScreen ({ episodes }: AiringLastEpisodesShowListProps) {
+  return (
         <View style={styles.container}>
             <Text>Airing Last Episodes Screen</Text>
             <FlatList
@@ -17,5 +17,5 @@ export function AiringLastEpisodesScreen({ episodes }: AiringLastEpisodesShowLis
                 keyExtractor={item => item.id}
             />
         </View>
-    )
+  )
 }

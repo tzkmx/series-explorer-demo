@@ -1,6 +1,6 @@
-import { Button } from "react-native"
+import { Button } from 'react-native'
 
-export function TabbedCont({ navigation, route }) {
+export function TabbedCont ({ navigation, route }) {
   const path = route.name
   return (
       <Button

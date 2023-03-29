@@ -1,15 +1,15 @@
-import React from "react";
-import { View, Image, Text } from "react-native";
-import { styles } from "./styles";
+import React from 'react'
+import { View, Image, Text } from 'react-native'
+import { styles } from './styles'
 
-type TvShowProperties = {
-    name: string;
-    image: string;
-    rating: number;
+interface TvShowProperties {
+  name: string
+  image: string
+  rating: number
 }
 
-export function TvShow({ name, image, rating }: TvShowProperties) {
-    return (
+export function TvShow ({ name, image, rating }: TvShowProperties) {
+  return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
                 <Image style={styles.image} source={{ uri: image }} />
@@ -21,5 +21,5 @@ export function TvShow({ name, image, rating }: TvShowProperties) {
                 </View>
             </View>
         </View>
-    )
+  )
 }

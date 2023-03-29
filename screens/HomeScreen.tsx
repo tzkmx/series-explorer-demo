@@ -1,7 +1,7 @@
-import { View, ScrollView, Button } from "react-native"
-import { styles } from "./styles"
+import { View, ScrollView, Button } from 'react-native'
+import { styles } from './styles'
 
-export function HomeScreen ( { navigation }) {
+export function HomeScreen ({ navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
@@ -19,7 +19,7 @@ export function HomeScreen ( { navigation }) {
         <View style={{ backgroundColor: 'orange', width: 200, height: 100 }} />
       </ScrollView>
     </View>
-  );
+  )
 }
 
 export function TabHeader ({ onPress }) {
@@ -28,6 +28,5 @@ export function TabHeader ({ onPress }) {
         title="Logout"
         onPress={onPress}
       />
-  );
+  )
 }
-

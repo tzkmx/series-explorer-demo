@@ -1,22 +1,21 @@
-import { View, FlatList, Text } from "react-native";
-import { styles } from "./styles";
-import { TvShow } from "./TvShow";
+import { View, FlatList, Text } from 'react-native'
+import { styles } from './styles'
+import { TvShow } from './TvShow'
 
-export type FavoriteShowProps = {
-    id: string;
-    name: string;
-    image: string;
-    rating: number;
+export interface FavoriteShowProps {
+  id: string
+  name: string
+  image: string
+  rating: number
 }
 
-type FavoritesScreenProps = {
-    page: number;
-    favoriteShows: FavoriteShowProps[];
+interface FavoritesScreenProps {
+  page: number
+  favoriteShows: FavoriteShowProps[]
 }
 
-
-export function FavoritesScreen({ page, favoriteShows }: FavoritesScreenProps) {
-    return (
+export function FavoritesScreen ({ page, favoriteShows }: FavoritesScreenProps) {
+  return (
         <View style={styles.container}>
             <Text>Favorites Screen</Text>
             <FlatList
@@ -25,5 +24,5 @@ export function FavoritesScreen({ page, favoriteShows }: FavoritesScreenProps) {
                 keyExtractor={item => item.id}
             />
         </View>
-    )
+  )
 }

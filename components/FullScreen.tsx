@@ -1,12 +1,12 @@
-import { ImageBackground, Image } from 'react-native';
-import styled from 'styled-components/native';
+import { ImageBackground, Image } from 'react-native'
+import styled from 'styled-components/native'
 
 const FullScreenBackground = styled(ImageBackground)`
   flex: 1;
   justify-content: center;
   align-items: center;
   resize-mode: stretch;
-`;
+`
 
 const FullScreenContainer = styled.View`
   flex: 1;
@@ -23,13 +23,9 @@ const BgImage = styled(Image)`
 export const FullScreen = ({ children, source }) => {
   return (
     <FullScreenBackground source={source}>
-        <FullScreenContainer>        
+        <FullScreenContainer>
             {children}
         </FullScreenContainer>
     </FullScreenBackground>
-  );
-};
-
-
-
-
+  )
+}

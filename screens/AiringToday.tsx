@@ -1,17 +1,17 @@
-import { FlatList, View, Text } from "react-native";
-import { FavoriteShowProps } from "./Favorites";
-import { styles } from "./styles";
-import { TvShow } from "./TvShow";
+import { FlatList, View, Text } from 'react-native'
+import { type FavoriteShowProps } from './Favorites'
+import { styles } from './styles'
+import { TvShow } from './TvShow'
 
-type AiringTodayShowListProps = {
-    page: number;
-    airingTodayShows: AiringTodayShowProps[];
+interface AiringTodayShowListProps {
+  page: number
+  airingTodayShows: AiringTodayShowProps[]
 }
 
-type AiringTodayShowProps = FavoriteShowProps;
+type AiringTodayShowProps = FavoriteShowProps
 
-export function AiringTodayScreen({ page, airingTodayShows }: AiringTodayShowListProps) {
-    return (
+export function AiringTodayScreen ({ page, airingTodayShows }: AiringTodayShowListProps) {
+  return (
         <View style={styles.container}>
             <Text>Airing Today Screen</Text>
             <FlatList
@@ -20,5 +20,5 @@ export function AiringTodayScreen({ page, airingTodayShows }: AiringTodayShowLis
                 keyExtractor={item => item.id}
             />
         </View>
-    )
+  )
 }

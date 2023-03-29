@@ -8,8 +8,7 @@ import { TabNavigator } from './nav/TabNavigator'
 
 const Stack = createNativeStackNavigator()
 
-
-export default function App() {
+export default function App () {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={ { headerShown: false } }>
