@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { WelcomeScreen } from './screens/WelcomeScreen'
 import { LoginScreen } from './screens/LoginScreen'
 import { TabNavigator } from './nav/TabNavigator'
+// import { SafeAreaView } from 'react-native'
 
 const Stack = createNativeStackNavigator()
 

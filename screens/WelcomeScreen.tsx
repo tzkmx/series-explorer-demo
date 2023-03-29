@@ -17,7 +17,7 @@ export function WelcomeScreen ({ navigation }) {
               bgColor={AppColor.light}
               onPress={() => navigation.navigate('Login')} />
           <PressableLink
-              onPress={() => { console.log('Forgot Password') }}>
+              onPress={() => { navigation.navigate('TabNavigator') }}>
                 Forgot Password?
           </PressableLink>
       </ButtonGroup>
