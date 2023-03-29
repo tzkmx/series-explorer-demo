@@ -2,10 +2,11 @@ import { ActivityIndicator, FlatList, Pressable, Text } from 'react-native'
 import { SerieMediaObject } from '../components/SerieMediaObject'
 import { SeriePosterItem } from '../components/SeriePosterItem'
 import styled from 'styled-components/native'
-import { BigTitle } from '../components/Legends'
+import { SectionTitle } from '../components/Legends'
 import { useEffect } from 'react'
 import { useMachine, useSelector } from '@xstate/react'
 import { seriesDataMachine } from '../state/series-data-machine'
+import { seriesDataListBuilder } from '../api_modules/mappers'
 
 // View Component full screen dark background
 const HomeContainer = styled.View`
@@ -35,21 +36,11 @@ export function HomeScreen ({ navigation }) {
   const loadingPopular = seriesState.matches({ home: { popular: 'loading' } })
   const loadingRecommended = seriesState.matches({ home: { recommended: 'loading' } })
 
-  const popularSeriesApi = useSelector(service, (state) => {
-    const items = state.context.popular.items ?? []
-    const series = state.context.commonIndex
-    return items.map((item) => {
-      return { ...series[item] }
-    })
-  })
+  const popularSeriesApi = useSelector(service, (state) =>
+    seriesDataListBuilder(state, 'popular'))
 
-  const recommendedSeriesApi = useSelector(service, (state) => {
-    const items = state.context.recommended.items ?? []
-    const series = state.context.commonIndex
-    return items.map((item) => {
-      return { ...series[item] }
-    })
-  })
+  const recommendedSeriesApi = useSelector(service, (state) =>
+    seriesDataListBuilder(state, 'recommended'))
 
   let sub
   useEffect(() => {
@@ -68,7 +59,7 @@ export function HomeScreen ({ navigation }) {
   return (
       <HomeContainer>
         <Container>
-        <BigTitle>Popular</BigTitle>
+        <SectionTitle>Popular</SectionTitle>
         {
           loadingPopular
             ? <ActivityIndicator size="large" color="#fff" />
@@ -79,13 +70,13 @@ export function HomeScreen ({ navigation }) {
             return <SeriePosterItem key={item.id}
               name={item.name}
               rating={item.vote_average}
-              image={getFullImageUrl(item.poster_path)}
+              image={item.poster_path}
             />
           }}
         />
         }
         </Container>
-        <BigTitle>Recommendations</BigTitle>
+        <SectionTitle>Recommendations</SectionTitle>
         {
           loadingRecommended
             ? <ActivityIndicator size="large" color="#fff" />
@@ -97,7 +88,7 @@ export function HomeScreen ({ navigation }) {
               id={item.id}
               name={item.name}
               rating={item.vote_average}
-              image={getFullImageUrl(item.poster_path)}
+              image={item.poster_path}
               isFavorite={isFavorite}
             />
           }}
@@ -121,6 +112,3 @@ export function TabHeader ({ onPress }) {
   )
 }
 
-function getFullImageUrl (path: string, size: string = 'w500') {
-  return `https://image.tmdb.org/t/p/${size}/${path}`
-}

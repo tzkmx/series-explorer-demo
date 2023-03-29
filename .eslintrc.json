@@ -13,6 +13,7 @@
   "overrides": [
     {
       "files": [
+        "api_modules/**/*.ts",
         "components/**/*.tsx",
         "screens/**/*.tsx",
         "nav/**/*.tsx",

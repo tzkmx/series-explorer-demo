@@ -1,5 +1,5 @@
 import { createMachine, assign } from 'xstate'
-import Constants from 'expo-constants'
+import { fetchPopularSeries, fetchRecommendedSeries } from '../api_modules/fetchers'
 
 type Series = {
   id: string
@@ -260,38 +260,3 @@ export const seriesDataMachine = createMachine<SeriesDataContext, SeriesDataEven
     },
   },
 )
-
-async function fetchPopularSeries (page: number) {
-  const API_KEY = Constants.expoConfig?.extra?.tmdbApiKey
-  await wait(3000)
-
-  return fetch(
-    `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&language=en-US&page=${page}`,
-  )
-    .then(async (res) => res.json())
-    .then((data) => {
-      if (data.success === false) throw new Error(data.status_message)
-      console.log('fetchPopularSeries', data.results.length)
-      return data.results
-    })
-}
-
-async function fetchRecommendedSeries (page: number) {
-  const API_KEY = Constants.expoConfig?.extra?.tmdbApiKey
-  await wait(2000)
-
-  return fetch(
-    `https://api.themoviedb.org/3/tv/top_rated?api_key=${API_KEY}&language=en-US&page=${page}`,
-  )
-    .then(async (res) => res.json())
-    .then((data) => {
-      if (data.success === false) throw new Error(data.status_message)
-      console.log('fetchRecommendedSeries', data.results.length)
-      return data.results
-    })
-}
-
-// waaaait helper to introduce delay in async functions
-async function wait (ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
