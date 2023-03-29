@@ -1,60 +1,11 @@
-import { Button, FlatList, Pressable, Text } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, Text } from 'react-native'
 import { SerieMediaObject } from '../components/SerieMediaObject'
 import { SeriePosterItem } from '../components/SeriePosterItem'
 import styled from 'styled-components/native'
 import { BigTitle } from '../components/Legends'
-
-const popularSeries = [
-  {
-    title: 'Popular',
-    data: [
-      {
-        id: 1,
-        name: 'The Walking Dead',
-        image: 'https://image.tmdb.org/t/p/w500/8kOWDBK6XlPUzckuHDo3wwVRFwt.jpg',
-        rating: 4,
-      },
-      {
-        id: 2,
-        name: 'The Flash',
-        image: 'https://image.tmdb.org/t/p/w500/lJA2RCMfsWoskqlQhXPSLFQGXEJ.jpg',
-        rating: 3,
-      },
-    ],
-  },
-]
-
-const recommendedSeries = [
-  {
-    title: 'Recommendations',
-    data: [
-      {
-        id: 3,
-        name: 'The Simpsons',
-        image: 'https://image.tmdb.org/t/p/w500/2IWouZK4gkgHhJa3oyYuSWfSqbG.jpg',
-        rating: 5,
-      },
-      {
-        id: 4,
-        name: 'The Big Bang Theory',
-        image: 'https://image.tmdb.org/t/p/w500/ooBGRQBdbGzBxAVfExiO8r7kloA.jpg',
-        rating: 4,
-      },
-      {
-        id: 5,
-        name: 'The Good Doctor',
-        image: 'https://image.tmdb.org/t/p/w500/6tfT03sGp9k4c0J3dypjrI8TSAI.jpg',
-        rating: 3,
-      },
-      {
-        id: 6,
-        name: 'The Mandalorian',
-        image: 'https://image.tmdb.org/t/p/w500/sWgBv7LV2PRoQgkxwlibdGXKz1S.jpg',
-        rating: 5,
-      },
-    ],
-  },
-]
+import { useEffect } from 'react'
+import { useMachine, useSelector } from '@xstate/react'
+import { seriesDataMachine } from '../state/series-data-machine'
 
 // View Component full screen dark background
 const HomeContainer = styled.View`
@@ -80,33 +31,78 @@ const Container = styled.View`
  * @returns
  */
 export function HomeScreen ({ navigation }) {
+  const [seriesState, send, service] = useMachine(seriesDataMachine)
+  const loadingPopular = seriesState.matches({ home: { popular: 'loading' } })
+  const loadingRecommended = seriesState.matches({ home: { recommended: 'loading' } })
+
+  const popularSeriesApi = useSelector(service, (state) => {
+    const items = state.context.popular.items ?? []
+    const series = state.context.commonIndex
+    return items.map((item) => {
+      return { ...series[item] }
+    })
+  })
+
+  const recommendedSeriesApi = useSelector(service, (state) => {
+    const items = state.context.recommended.items ?? []
+    const series = state.context.commonIndex
+    return items.map((item) => {
+      return { ...series[item] }
+    })
+  })
+
+  let sub
+  useEffect(() => {
+    sub = service.subscribe((state) => {
+      console.log(state.value)
+      if (state.changed) {
+        console.log(state.context)
+      }
+    })
+
+    send('LOAD_HOME')
+
+    return () => { sub.unsubscribe() }
+  }, [])
+
   return (
       <HomeContainer>
         <Container>
         <BigTitle>Popular</BigTitle>
-        <FlatList
+        {
+          loadingPopular
+            ? <ActivityIndicator size="large" color="#fff" />
+            : <FlatList
           horizontal
-          data={popularSeries}
-          renderItem={({ item: { data } }) => {
-            return data.map((item) => {
-              const isFavorite = item.id === 1
-              const itemProps = { ...item, isFavorite }
-              return <SeriePosterItem key={item.id} {...itemProps} />
-            })
+          data={popularSeriesApi}
+          renderItem={({ item }) => {
+            return <SeriePosterItem key={item.id}
+              name={item.name}
+              rating={item.vote_average}
+              image={getFullImageUrl(item.poster_path)}
+            />
           }}
         />
+        }
         </Container>
         <BigTitle>Recommendations</BigTitle>
-        <FlatList
-          data={recommendedSeries}
-          renderItem={({ item: { data } }) => {
-            return data.map((item) => {
-              const isFavorite = item.id === 3
-              const itemProps = { ...item, isFavorite }
-              return <SerieMediaObject key={item.id} {...itemProps} />
-            })
+        {
+          loadingRecommended
+            ? <ActivityIndicator size="large" color="#fff" />
+            : <FlatList
+          data={recommendedSeriesApi}
+          renderItem={({ item }) => {
+            const isFavorite = item.id === 3
+            return <SerieMediaObject key={item.id}
+              id={item.id}
+              name={item.name}
+              rating={item.vote_average}
+              image={getFullImageUrl(item.poster_path)}
+              isFavorite={isFavorite}
+            />
           }}
         />
+      }
       </HomeContainer>
   )
 }
@@ -123,4 +119,8 @@ export function TabHeader ({ onPress }) {
       <Text>⚙️</Text>
     </PressableCentered>
   )
+}
+
+function getFullImageUrl (path: string, size: string = 'w500') {
+  return `https://image.tmdb.org/t/p/${size}/${path}`
 }

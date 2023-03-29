@@ -88,13 +88,13 @@ export const authenticationMachine = createMachine({
   services: {
     validateCredentials: async (context: AuthContext) => {
       const { username, password } = context
-      return await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         setTimeout(() => {
           if ((hardcodedCredentials[username ?? ''] ?? null) === password) {
-            console.log('ok')
+            console.log('login ok')
             resolve('ok')
           } else {
-            console.log('error')
+            console.log('login error')
             reject(Error('Invalid credentials'))
           }
         }, 1000)

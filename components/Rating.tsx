@@ -4,7 +4,7 @@ import { AppColor } from './Button'
 export function Rating ({ rating }) {
   const stars: JSX.Element[] = []
   for (let i = 0; i < 5; i++) {
-    stars.push(<StarIcon filled={i < rating} />)
+    stars.push(<StarIcon key={i} filled={i < rating} />)
   }
   return (
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
