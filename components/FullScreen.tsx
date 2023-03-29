@@ -17,7 +17,7 @@ const FullScreenContainer = styled.View`
   padding: 30px 0;
 `
 
-interface FullScreenProps {
+type FullScreenProps = {
   children: React.ReactNode
   source: any
   title: string

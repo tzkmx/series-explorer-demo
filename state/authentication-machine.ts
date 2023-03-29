@@ -15,16 +15,22 @@ type SetPasswordAction = {
   password: string
 }
 
+type ErrorValidatingCredentials = {
+  data: Error
+  type: 'error.platform.validateCredentials'
+}
+
 type AuthEvents =
 | SetUsernameAction
 | SetPasswordAction
 | { type: 'LOGIN' }
+| ErrorValidatingCredentials
 
 type AuthContext = {
   username?: string
   password?: string
   isLoading: boolean
-  error?: Error
+  error?: string
 }
 
 export const authenticationMachine = createMachine({
@@ -112,9 +118,11 @@ export const authenticationMachine = createMachine({
     stopLoading: assign({
       isLoading: false,
     }),
-    setErrorMessage: assign({
-      error: (_context, event) => event.data.message,
-    }),
+    setErrorMessage: assign(
+      (_context, event: ErrorValidatingCredentials) => ({
+        error: event.data?.message?.toString() ?? 'Unknown error',
+      }),
+    ),
   },
 },
 )

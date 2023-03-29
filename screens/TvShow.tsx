@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image, Text } from 'react-native'
 import { styles } from './styles'
 
-interface TvShowProperties {
+type TvShowProperties = {
   name: string
   image: string
   rating: number

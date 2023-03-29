@@ -3,7 +3,7 @@ import { type FavoriteShowProps } from './Favorites'
 import { styles } from './styles'
 import { TvShow } from './TvShow'
 
-interface AiringLastEpisodesShowListProps {
+type AiringLastEpisodesShowListProps = {
   episodes: FavoriteShowProps[]
 }
 

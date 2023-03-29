@@ -2,14 +2,14 @@ import { View, FlatList, Text } from 'react-native'
 import { styles } from './styles'
 import { TvShow } from './TvShow'
 
-export interface FavoriteShowProps {
+export type FavoriteShowProps = {
   id: string
   name: string
   image: string
   rating: number
 }
 
-interface FavoritesScreenProps {
+type FavoritesScreenProps = {
   page: number
   favoriteShows: FavoriteShowProps[]
 }

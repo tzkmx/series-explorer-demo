@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TextInput as RNTextInput, TextInputProps } from 'react-native'
+import { TextInput as RNTextInput, type TextInputProps } from 'react-native'
 import styled from 'styled-components/native'
 
 const Container = styled.View`
