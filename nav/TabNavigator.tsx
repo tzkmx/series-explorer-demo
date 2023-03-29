@@ -1,14 +1,15 @@
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { View, Text } from 'react-native'
 import { AppColor } from '../components/Button'
 import { TabbedCont } from '../components/TabbedCont'
 import { HomeScreen, TabHeader } from '../screens/HomeScreen'
 import styled from 'styled-components/native'
+import { SeriesDataMachineCtx } from '../state/series-data-machine'
 
 export function TabNavigator () {
   const Tab = createBottomTabNavigator()
   return (
+    <SeriesDataMachineCtx.Provider>
       <Tab.Navigator
         screenOptions={({ navigation }) => ({
           headerRight: () => <TabHeader onPress={() => navigation.navigate('Welcome')} />,
@@ -43,6 +44,7 @@ export function TabNavigator () {
           }}
         />
       </Tab.Navigator>
+    </SeriesDataMachineCtx.Provider>
   )
 }
 

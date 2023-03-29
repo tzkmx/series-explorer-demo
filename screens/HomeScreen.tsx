@@ -4,8 +4,7 @@ import { SeriePosterItem } from '../components/SeriePosterItem'
 import styled from 'styled-components/native'
 import { SectionTitle } from '../components/Legends'
 import { useEffect } from 'react'
-import { useMachine, useSelector } from '@xstate/react'
-import { seriesDataMachine } from '../state/series-data-machine'
+import { SeriesDataMachineCtx } from '../state/series-data-machine'
 import { seriesDataListBuilder } from '../api_modules/mappers'
 
 // View Component full screen dark background
@@ -32,28 +31,18 @@ const Container = styled.View`
  * @returns
  */
 export function HomeScreen ({ navigation }) {
-  const [seriesState, send, service] = useMachine(seriesDataMachine)
+  const [seriesState, send] = SeriesDataMachineCtx.useActor()
   const loadingPopular = seriesState.matches({ home: { popular: 'loading' } })
   const loadingRecommended = seriesState.matches({ home: { recommended: 'loading' } })
 
-  const popularSeriesApi = useSelector(service, (state) =>
+  const popularSeriesApi = SeriesDataMachineCtx.useSelector((state) =>
     seriesDataListBuilder(state, 'popular'))
 
-  const recommendedSeriesApi = useSelector(service, (state) =>
+  const recommendedSeriesApi = SeriesDataMachineCtx.useSelector((state) =>
     seriesDataListBuilder(state, 'recommended'))
 
-  let sub
   useEffect(() => {
-    sub = service.subscribe((state) => {
-      console.log(state.value)
-      if (state.changed) {
-        console.log(state.context)
-      }
-    })
-
     send('LOAD_HOME')
-
-    return () => { sub.unsubscribe() }
   }, [])
 
   return (
@@ -83,13 +72,11 @@ export function HomeScreen ({ navigation }) {
             : <FlatList
           data={recommendedSeriesApi}
           renderItem={({ item }) => {
-            const isFavorite = item.id === 3
             return <SerieMediaObject key={item.id}
               id={item.id}
               name={item.name}
               rating={item.vote_average}
               image={item.poster_path}
-              isFavorite={isFavorite}
             />
           }}
         />
@@ -111,4 +98,3 @@ export function TabHeader ({ onPress }) {
     </PressableCentered>
   )
 }
-

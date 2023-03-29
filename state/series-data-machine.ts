@@ -1,5 +1,8 @@
 import { createMachine, assign } from 'xstate'
 import { fetchPopularSeries, fetchRecommendedSeries } from '../api_modules/fetchers'
+import { getFavorites, storeFavorites } from '../api_modules/async-storage'
+
+import { createActorContext } from '@xstate/react'
 
 type Series = {
   id: string
@@ -17,19 +20,40 @@ type SeriesListing = {
   currentPage: number
 }
 
+type FavoriteProps = {
+  id: string
+  favorited: boolean
+  date: number | Date
+}
+
+type FavoritedSeries = Record<string, FavoriteProps>
+
 type SeriesDataContext = {
   commonIndex: SeriesInMemory
   popular: SeriesListing
   recommended: SeriesListing
   recent: SeriesListing
   airingToday: SeriesListing
-  favoritesList: SeriesItemList
+  favorites: FavoritedSeries
+  favoritesList: string[]
   errorMessage?: string
+}
+
+type AddToFavoritesEvent = {
+  type: 'ADD_TO_FAVORITES'
+  seriesId: string
+  date: Date
+}
+
+type RemoveFromFavoritesEvent = {
+  type: 'REMOVE_FROM_FAVORITES'
+  seriesId: string
+  date: Date
 }
 
 type LoadDataEvents = {
   type: 'LOAD_HOME' | 'LOAD_RECENT' | 'LOAD_AIRING_TODAY' | 'LOAD_FAVORITES'
-  page: number
+  page: Date
 }
 
 type SuccessApiFetchEvent = {
@@ -42,11 +66,16 @@ type ErrorApiFetchEvent = {
   data: Error
 }
 
-type SeriesDataEvents =
+type UiLoaderEvents =
 | { type: 'LOAD_NEXT_PAGE' }
+
+type SeriesDataEvents =
+| UiLoaderEvents
 | LoadDataEvents
 | SuccessApiFetchEvent
 | ErrorApiFetchEvent
+| AddToFavoritesEvent
+| RemoveFromFavoritesEvent
 
 /**
  * State machine that manages the loading of series data.
@@ -61,12 +90,7 @@ type SeriesDataEvents =
  * Popular and Recommended will call their substates and services in parallel,
  * because they are consumed in the same screen.
  *
- * We gonna need actions to load the next page of the paginated listings.
- *
- * On the successful fetching of any listing from the API, we gonna merge
- * every series in the commonIndex, so we can use the same object for every
- * listing. This will be done iterating on the array of results, and putting
- * in the commondIndex, with the id as the key, each series object.
+ * We devised actions to load the next page of the paginated listings.
  *
  * The commonIndex is a dictionary that maps the series id to the series
  * object. This way, we can use the same object for every listing, so we
@@ -85,13 +109,18 @@ export const seriesDataMachine = createMachine<SeriesDataContext, SeriesDataEven
       recommended: { items: [], currentPage: 1 },
       recent: { items: [], currentPage: 1 },
       airingToday: { items: [], currentPage: 1 },
-      favoritesList: [],
+      favorites: {
+        130392: { id: '130392', favorited: true, date: Date.now() },
+      },
+      favoritesList: ['130392'],
     },
     on: {
       LOAD_HOME: { target: 'home' },
       LOAD_RECENT: { target: 'recent.loading' },
       LOAD_AIRING_TODAY: { target: 'airingToday.loading' },
       LOAD_FAVORITES: { target: 'favorites.loading' },
+      ADD_TO_FAVORITES: { actions: 'addToFavorites' },
+      REMOVE_FROM_FAVORITES: { actions: 'removeFromFavorites' },
     },
     states: {
       idle: {},
@@ -222,7 +251,6 @@ export const seriesDataMachine = createMachine<SeriesDataContext, SeriesDataEven
     },
     actions: {
       mergeSeries: (context, event) => {
-        console.log({ mergeSeries: event })
         const data = event?.data || []
         const { commonIndex } = context
 
@@ -257,6 +285,37 @@ export const seriesDataMachine = createMachine<SeriesDataContext, SeriesDataEven
         return { errorMessage: event.data?.message }
       }),
       clearError: assign({ errorMessage: undefined }),
+      addToFavorites: assign((context, event: AddToFavoritesEvent) => {
+        const { favorites, favoritesList } = context
+        const { seriesId } = event
+
+        favorites[seriesId] = {
+          id: seriesId,
+          favorited: true,
+          date: event.date.getTime(),
+        }
+        favoritesList.push(seriesId)
+
+        return { favorites, favoritesList }
+      }),
+      removeFromFavorites: assign((context, event: RemoveFromFavoritesEvent) => {
+        const { favorites, favoritesList } = context
+        const { seriesId } = event
+
+        favorites[seriesId] = {
+          ...favorites[seriesId],
+          favorited: false,
+          date: event.date.getTime(),
+        }
+        const index = favoritesList.indexOf(seriesId)
+        favoritesList.splice(index, 1)
+
+        return { favorites, favoritesList }
+      }),
+      saveFavoritesList: (ctx) => { void storeFavorites(ctx.favoritesList) },
+      recoverFavorites: () => { void getFavorites() },
     },
   },
 )
+
+export const SeriesDataMachineCtx = createActorContext(seriesDataMachine)

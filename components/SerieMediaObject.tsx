@@ -1,6 +1,8 @@
-import React from 'react'
-import { View, Text } from 'react-native'
+import React, { useCallback, useEffect } from 'react'
+import { View, Pressable } from 'react-native'
 import styled from 'styled-components/native'
+import { SeriesDataMachineCtx } from '../state/series-data-machine'
+import { PressableLink } from './PressableLink'
 import { Rating } from './Rating'
 
 type SerieMediaObjectProps = {
@@ -8,7 +10,6 @@ type SerieMediaObjectProps = {
   image: string
   name: string
   rating: number
-  isFavorite: boolean
 }
 
 const Container = styled.View`
@@ -35,7 +36,26 @@ const Title = styled.Text`
  * and link to watchNow and add to favorites, with the heart showing if it is already a favorite.
  *
  */
-export function SerieMediaObject ({ image, name, rating, isFavorite }: SerieMediaObjectProps) {
+export function SerieMediaObject ({ id, image, name, rating }: SerieMediaObjectProps) {
+  const actor = SeriesDataMachineCtx.useActorRef()
+  const isFavorited = SeriesDataMachineCtx.useSelector(({ context: { favorites }}) => {
+    return favorites[id]?.favorited
+  })
+
+  useEffect(() => {
+    console.log('MediaObject', { id, isFavorited })
+  }, [isFavorited])
+
+  const addFavoriteCallback = useCallback(() => {
+    console.log('addFavoriteCallback', id)
+    actor.send({ type: 'ADD_TO_FAVORITES', seriesId: id, date: new Date() })
+  }, [isFavorited])
+
+  const removeFavoriteCallback = useCallback(() => {
+    console.log('removeFavoriteCallback', id)
+    actor.send({ type: 'REMOVE_FROM_FAVORITES', seriesId: id, date: new Date() })
+  }, [isFavorited])
+
   return (
         <Container>
             <Image source={{ uri: image }} />
@@ -43,11 +63,43 @@ export function SerieMediaObject ({ image, name, rating, isFavorite }: SerieMedi
                 <Title>{name}</Title>
                 <Rating rating={rating}/>
             </View>
-            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                <Text style={{ color: '#8c8c8c' }}>Watch Now</Text>
-                <HeartIcon favorited={isFavorite}/>
+            <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}>
+                <PressableLink onPress={() => {
+                  console.log('watch now', id)
+                }}>Watch Now</PressableLink>
+                <ToggleFavorite id={id} isFavorite={isFavorited}
+                  addFavoriteCallback={addFavoriteCallback}
+                  removeFavoriteCallback={removeFavoriteCallback}
+                />
             </View>
         </Container>
+  )
+}
+
+type ToggleFavoriteProps = {
+  id: string | number
+  isFavorite: boolean
+  addFavoriteCallback: (id: string | number) => void
+  removeFavoriteCallback: (id: string | number) => void
+}
+
+const HeartIconWithAir = styled(HeartIcon)`
+    margin-top: 10px;
+`
+
+function ToggleFavorite ({ id, isFavorite, addFavoriteCallback, removeFavoriteCallback }: ToggleFavoriteProps) {
+  return (
+    <Pressable
+      onPress={() => {
+        if (isFavorite) {
+          removeFavoriteCallback(id)
+        } else {
+          addFavoriteCallback(id)
+        }
+      }}
+      >
+      <HeartIconWithAir favorited={isFavorite} />
+    </Pressable>
   )
 }
 
@@ -58,6 +110,6 @@ function HeartIcon ({ favorited }: { favorited: boolean }) {
 }
 
 const HeartIconStyled = styled.Text`
-    font-size: 20px;
+    font-size: 30px;
     color: #ffd233;
 `
