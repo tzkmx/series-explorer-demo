@@ -6,11 +6,13 @@ import { HomeScreen, TabHeader } from '../screens/HomeScreen'
 export function TabNavigator () {
     const Tab = createBottomTabNavigator()
     return (
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} options={{headerRight: () => <TabHeader />}} />
-        <Tab.Screen name="Favorites" component={TabbedCont} options={{headerRight: () => <TabHeader />}} />
-        <Tab.Screen name="Recent" component={TabbedCont} options={{headerRight: () => <TabHeader />}} />
-        <Tab.Screen name="Search" component={TabbedCont} options={{headerRight: () => <TabHeader />}} />
+      <Tab.Navigator screenOptions={({ navigation }) => ({
+        headerRight: () => <TabHeader onPress={() => navigation.navigate('Welcome')} />
+        })}>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Favorites" component={TabbedCont} />
+        <Tab.Screen name="Recent" component={TabbedCont} />
+        <Tab.Screen name="Search" component={TabbedCont} />
       </Tab.Navigator>
     )
   }

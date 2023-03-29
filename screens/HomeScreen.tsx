@@ -22,11 +22,11 @@ export function HomeScreen ( { navigation }) {
   );
 }
 
-export function TabHeader () {
+export function TabHeader ({ onPress }) {
   return (
       <Button
         title="Logout"
-        onPress={() => alert('Logout')}
+        onPress={onPress}
       />
   );
 }
