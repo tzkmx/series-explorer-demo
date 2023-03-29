@@ -12,4 +12,5 @@ export const ButtonGroup = styled.View`
     flex: 1;
     flex-direction: column;
     margin-top: 20px;
+    justify-content: center;
 `

@@ -6,9 +6,25 @@
     "project": "./tsconfig.json"
   },
   "rules": {
-    "semi": ["error", "never"],
-    "comma-dangle": ["error", "always-multiline"],
-    "@typescript-eslint/explicit-function-return-type": "off"
-  }
+    "comma-dangle": "off",
+    "no-unused-vars": "off"
+  },
+  "overrides": [
+    {
+      "files": [
+        "components/**/*.tsx",
+        "screens/**/*.tsx",
+        "nav/**/*.tsx",
+        "App.tsx"
+      ],
+      "rules": {
+        "semi": ["error", "never"],
+        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        "@typescript-eslint/comma-dangle": ["error", "always-multiline"],
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ]
 }
 

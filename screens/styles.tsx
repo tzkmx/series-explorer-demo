@@ -5,12 +5,12 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   loginField: {
     height: 40,
     borderColor: 'gray',
-    borderWidth: 1
+    borderWidth: 1,
   },
   imageContainer: {
     flex: 1,
@@ -18,38 +18,38 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     width: 100,
     height: 100,
-    backgroundColor: 'red'
+    backgroundColor: 'red',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'white'
+    color: 'white',
   },
   ratingContainer: {
     backgroundColor: 'black',
     width: 50,
     height: 50,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   rating: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   textContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'blue'
+    backgroundColor: 'blue',
   },
   image: {
     width: 100,
-    height: 100
+    height: 100,
   },
   description: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 })

@@ -1,5 +1,7 @@
-import { ImageBackground, Image } from 'react-native'
+import { ImageBackground } from 'react-native'
 import styled from 'styled-components/native'
+import { BigTitle } from './Legends'
+import { ButtonGroup } from './MiniLayouts'
 
 const FullScreenBackground = styled(ImageBackground)`
   flex: 1;
@@ -12,20 +14,24 @@ const FullScreenContainer = styled.View`
   flex: 1;
   flex-direction: column;
   justify-content: center;
+  padding: 30px 0;
 `
 
-const BgImage = styled(Image)`
-    flex: 1;
-    resizeMode: stretch;
-    justifyContent: center;
-`
+interface FullScreenProps {
+  children: React.ReactNode
+  source: any
+  title: string
+}
 
-export const FullScreen = ({ children, source }) => {
+export function WelcomeLayout ({ children, source, title }: FullScreenProps) {
   return (
     <FullScreenBackground source={source}>
-        <FullScreenContainer>
-            {children}
-        </FullScreenContainer>
+      <FullScreenContainer>
+        <BigTitle>{title}</BigTitle>
+        <ButtonGroup>
+          {children}
+        </ButtonGroup>
+      </FullScreenContainer>
     </FullScreenBackground>
   )
 }

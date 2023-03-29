@@ -1,7 +1,6 @@
 import { Button } from 'react-native'
 
-export function TabbedCont ({ navigation, route }) {
-  const path = route.name
+export function TabbedCont ({ navigation }) {
   return (
       <Button
         title="Go to Welcome"

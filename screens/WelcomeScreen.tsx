@@ -1,26 +1,26 @@
 import React from 'react'
-import { FullScreen } from '../components/FullScreen'
-import { Button } from '../components/Button'
+import { WelcomeLayout } from '../components/FullScreen'
+import { AppColor, Button } from '../components/Button'
 import { cavill } from '../components/unauthimage'
-import { ButtonGroup, JustifyBetween } from '../components/MiniLayouts'
-import { BigTitle } from '../components/Legends'
+import { ButtonGroup } from '../components/MiniLayouts'
+import { PressableLink } from '../components/PressableLink'
 
 export function WelcomeScreen ({ navigation }) {
   return (
-    <FullScreen source={cavill}>
-      <JustifyBetween>
-        <BigTitle>Welcome</BigTitle>
-        <JustifyBetween>
-        <ButtonGroup>
-            <Button
-                title="Go to Login"
-                onPress={() => navigation.navigate('Login')} />
-            <Button
-                title="Go to SignUp"
-                onPress={() => { console.log('SignUp') }} />
-        </ButtonGroup>
-        </JustifyBetween>
-      </JustifyBetween>
-    </FullScreen>
+    <WelcomeLayout source={cavill} title={'Welcome!'}>
+      <ButtonGroup>
+          <Button
+              title="Sign up"
+              onPress={() => { console.log('SignUp') }} />
+          <Button
+              title="Log in"
+              bgColor={AppColor.light}
+              onPress={() => navigation.navigate('Login')} />
+          <PressableLink
+              onPress={() => { console.log('Forgot Password')}}>
+                Forgot Password?
+          </PressableLink>
+      </ButtonGroup>
+    </WelcomeLayout>
   )
 }

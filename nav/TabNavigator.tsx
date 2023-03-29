@@ -7,7 +7,7 @@ export function TabNavigator () {
   const Tab = createBottomTabNavigator()
   return (
       <Tab.Navigator screenOptions={({ navigation }) => ({
-        headerRight: () => <TabHeader onPress={() => navigation.navigate('Welcome')} />
+        headerRight: () => <TabHeader onPress={() => navigation.navigate('Welcome')} />,
       })}>
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Favorites" component={TabbedCont} />
