@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { TextInput as RNTextInput } from 'react-native'
+import { TextInput as RNTextInput, TextInputProps } from 'react-native'
 import styled from 'styled-components/native'
 
 const Container = styled.View`
   margin-bottom: 16px;
 `
 
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 const Label = styled.Text`
   font-size: ${props => props.fontSize || 16}px;
   color: ${props => props.color || '#8c8c8c'};
@@ -29,9 +28,8 @@ const ErrorText = styled.Text`
   color: red;
   margin-top: 4px;
 `
-/* eslint-enable @typescript-eslint/strict-boolean-expressions */
 
-interface TextInputFieldProps {
+type TextInputFieldProps = TextInputProps & {
   label: string
   secureEntry?: boolean
   placeholder: string
@@ -42,6 +40,7 @@ interface TextInputFieldProps {
   color?: string
   fontSize?: number
   autoFocus?: boolean
+  disabled?: boolean
   placeholderTextColor?: string
 }
 
@@ -53,6 +52,7 @@ export function TextInputField ({
   value,
   color,
   fontSize,
+  disabled = false,
   regex = /.*/,
   secureEntry = false,
   autoFocus = false,
@@ -63,8 +63,10 @@ export function TextInputField ({
   const [withData, setWithData] = useState(false)
 
   const handleValidation = (text) => {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     setError(!regex?.test(text))
+  }
+
+  const showLabel = ({ nativeEvent: { text } }) => {
     setWithData(text.length > 0)
   }
 
@@ -79,12 +81,14 @@ export function TextInputField ({
                 secureTextEntry={secureEntry}
                 value={value}
                 autoFocus={autoFocus}
-                onBlur={handleValidation}
+                onEndEditing={handleValidation}
+                onChange={showLabel}
                 onChangeText={onChangeText}
                 placeholder={placeholder}
                 placeholderTextColor={placeholderTextColor}
                 color={color}
                 fontSize={fontSize}
+                disabled={disabled}
                 {...rest} />
             {error ? <ErrorText>{errorMessage}</ErrorText> : null}
         </Container>

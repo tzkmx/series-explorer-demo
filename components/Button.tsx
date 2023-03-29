@@ -2,7 +2,6 @@ import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import styled from 'styled-components/native'
 
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 const RoundButton = styled(TouchableOpacity)`
   background-color: ${props => props.bgColor || '#ffd233'};
   border-radius: ${props => props.borderRadius || 20}px;
@@ -16,7 +15,6 @@ const ButtonText = styled.Text`
   font-weight: bold;
   text-align: center;
 `
-/* eslint-enable @typescript-eslint/strict-boolean-expressions */
 
 export enum AppColor {
   dark = '#191919',
@@ -25,7 +23,7 @@ export enum AppColor {
   gray = '#8c8c8c',
 }
 
-interface ButtonProperties {
+type ButtonProperties = {
   title: string
   onPress: () => void
   bgColor?: AppColor

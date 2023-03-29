@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import styled from 'styled-components/native'
 import { AppColor } from './Button'
 
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 const LinkText = styled.Text`
   color: ${props => props.isPressed ? AppColor.accent : AppColor.light};
   text-decoration-line: underline;
@@ -14,7 +13,6 @@ const PressableBackgroundSwitch = styled.Pressable`
   padding: 5px;
   border-radius: 5px;
 `
-/* eslint-enable @typescript-eslint/strict-boolean-expressions */
 
 export function PressableLink ({ onPress, children }) {
   const [isPressed, setIsPressed] = useState(false)
