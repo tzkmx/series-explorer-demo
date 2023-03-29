@@ -3,7 +3,7 @@ import { seriesDataMapper } from './mappers'
 
 export async function fetchPopularSeries (page: number) {
   const API_KEY = Constants.expoConfig?.extra?.tmdbApiKey
-  await wait(3000)
+  await wait(600)
 
   return fetch(
       `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&language=en-US&page=${page}`,
@@ -13,7 +13,7 @@ export async function fetchPopularSeries (page: number) {
 
 export async function fetchRecommendedSeries (page: number) {
   const API_KEY = Constants.expoConfig?.extra?.tmdbApiKey
-  await wait(2000)
+  await wait(400)
 
   return fetch(
       `https://api.themoviedb.org/3/tv/top_rated?api_key=${API_KEY}&language=en-US&page=${page}`,

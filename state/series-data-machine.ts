@@ -9,11 +9,14 @@ type Series = {
   name: string
   description: string
   image: string
+  rating: number
+  vote_average?: number
+  poster_path?: string
 }
 
 type SeriesInMemory = Record<string, Series>
 
-type SeriesItemList = Array<Pick<Series, 'id'>>
+type SeriesItemList = string[]
 
 type SeriesListing = {
   items: SeriesItemList
@@ -250,7 +253,7 @@ export const seriesDataMachine = createMachine<SeriesDataContext, SeriesDataEven
       loadRecommended: async (_ctx, { page }: LoadDataEvents) => fetchRecommendedSeries(page),
     },
     actions: {
-      mergeSeries: (context, event) => {
+      mergeSeries: (context, event: SuccessApiFetchEvent) => {
         const data = event?.data || []
         const { commonIndex } = context
 
@@ -259,7 +262,7 @@ export const seriesDataMachine = createMachine<SeriesDataContext, SeriesDataEven
         })
         return { commonIndex }
       },
-      savePopularIdList: assign((ctx, event) => {
+      savePopularIdList: assign((ctx, event: SuccessApiFetchEvent) => {
         const { data } = event
         const items = data.map((series) => series.id)
         const { popular: { currentPage } } = ctx
@@ -270,7 +273,7 @@ export const seriesDataMachine = createMachine<SeriesDataContext, SeriesDataEven
           },
         }
       }),
-      saveRecommendedIdList: assign((ctx, event) => {
+      saveRecommendedIdList: assign((ctx, event: SuccessApiFetchEvent) => {
         const { data } = event
         const items = data.map((series) => series.id)
         const { recommended: { currentPage } } = ctx
@@ -281,12 +284,12 @@ export const seriesDataMachine = createMachine<SeriesDataContext, SeriesDataEven
           },
         }
       }),
-      setErrorMsg: assign((_ctx, event) => {
+      setErrorMsg: assign((_ctx, event: ErrorApiFetchEvent) => {
         return { errorMessage: event.data?.message }
       }),
       clearError: assign({ errorMessage: undefined }),
       addToFavorites: assign((context, event: AddToFavoritesEvent) => {
-        const { favorites, favoritesList } = context
+        const { favorites } = context
         const { seriesId } = event
 
         favorites[seriesId] = {
@@ -294,12 +297,12 @@ export const seriesDataMachine = createMachine<SeriesDataContext, SeriesDataEven
           favorited: true,
           date: event.date.getTime(),
         }
-        favoritesList.push(seriesId)
+        const favoritesList = getFavoritedIds(favorites)
 
         return { favorites, favoritesList }
       }),
       removeFromFavorites: assign((context, event: RemoveFromFavoritesEvent) => {
-        const { favorites, favoritesList } = context
+        const { favorites } = context
         const { seriesId } = event
 
         favorites[seriesId] = {
@@ -307,8 +310,7 @@ export const seriesDataMachine = createMachine<SeriesDataContext, SeriesDataEven
           favorited: false,
           date: event.date.getTime(),
         }
-        const index = favoritesList.indexOf(seriesId)
-        favoritesList.splice(index, 1)
+        const favoritesList = getFavoritedIds(favorites)
 
         return { favorites, favoritesList }
       }),
@@ -317,5 +319,14 @@ export const seriesDataMachine = createMachine<SeriesDataContext, SeriesDataEven
     },
   },
 )
+
+function getFavoritedIds (favorites: FavoritedSeries): SeriesItemList {
+  return Object.keys(favorites).reduce((acc: string[], it) => {
+    if (favorites[it].favorited) {
+      acc.push(it)
+    }
+    return acc
+  }, [])
+}
 
 export const SeriesDataMachineCtx = createActorContext(seriesDataMachine)

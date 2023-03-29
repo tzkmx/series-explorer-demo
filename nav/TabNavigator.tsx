@@ -4,12 +4,11 @@ import { AppColor } from '../components/Button'
 import { TabbedCont } from '../components/TabbedCont'
 import { HomeScreen, TabHeader } from '../screens/HomeScreen'
 import styled from 'styled-components/native'
-import { SeriesDataMachineCtx } from '../state/series-data-machine'
+import { FavoritesScreen } from '../screens/Favorites'
 
 export function TabNavigator () {
   const Tab = createBottomTabNavigator()
   return (
-    <SeriesDataMachineCtx.Provider>
       <Tab.Navigator
         screenOptions={({ navigation }) => ({
           headerRight: () => <TabHeader onPress={() => navigation.navigate('Welcome')} />,
@@ -28,7 +27,7 @@ export function TabNavigator () {
             tabBarIcon: () => <Icon item={'🏠'}/>,
           }}
         />
-        <Tab.Screen name="Favorites" component={TabbedCont}
+        <Tab.Screen name="Favorites" component={FavoritesScreen}
           options={{
             tabBarIcon: () => <Icon item={'❤️'}/>,
           }}
@@ -44,7 +43,6 @@ export function TabNavigator () {
           }}
         />
       </Tab.Navigator>
-    </SeriesDataMachineCtx.Provider>
   )
 }
 
@@ -58,7 +56,7 @@ const IconItem = styled.Text`
   color: ${AppColor.dark};
 `
 
-function Icon({ item }) {
+function Icon ({ item }) {
   return (
     <IconContainer>
         <IconItem>{item}</IconItem>

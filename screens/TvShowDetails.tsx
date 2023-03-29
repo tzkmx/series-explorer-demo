@@ -1,34 +1,20 @@
-import { View, Image, Text } from 'react-native'
-import { styles } from './styles'
+import { TvShowView } from '../components/TvShowView'
+import { SeriesDataMachineCtx } from '../state/series-data-machine'
 
-type TvShowDetailsProperties = {
-  name: string
-  image: string
-  description: string
-  seasons: number
-  nextEpisode: string
-  isFavorite: boolean
-}
-
-export function TvShowDetails ({ name, image, description, seasons, nextEpisode, isFavorite }: TvShowDetailsProperties) {
+export function TvShowDetails ({ route }) {
+  const { seriesId } = route.params
+  const serieData = SeriesDataMachineCtx.useSelector(({ context }) => {
+    const { commonIndex } = context
+    return commonIndex[seriesId]
+  })
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const { name, poster_path, overview } = serieData
   return (
-        <View style={styles.container}>
-            <View style={styles.imageContainer}>
-                <Image style={styles.image} source={{ uri: image }} />
-            </View>
-            <View style={styles.textContainer}>
-                <Text style={styles.title}>{name}</Text>
-                <View style={styles.ratingContainer}>
-                    <Text style={styles.rating}>{seasons}</Text>
-                </View>
-                <View style={styles.ratingContainer}>
-                    <Text style={styles.rating}>{nextEpisode}</Text>
-                </View>
-                <View style={styles.ratingContainer}>
-                    <Text style={styles.rating}>{isFavorite}</Text>
-                </View>
-                <Text style={styles.description}>{description}</Text>
-            </View>
-        </View>
+    <TvShowView
+        name={name}
+        image={poster_path}
+        description={overview}
+        seasons={2}
+    />
   )
 }

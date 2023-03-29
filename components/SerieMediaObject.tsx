@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native'
 import React, { useCallback, useEffect } from 'react'
 import { View, Pressable } from 'react-native'
 import styled from 'styled-components/native'
@@ -38,9 +39,11 @@ const Title = styled.Text`
  */
 export function SerieMediaObject ({ id, image, name, rating }: SerieMediaObjectProps) {
   const actor = SeriesDataMachineCtx.useActorRef()
-  const isFavorited = SeriesDataMachineCtx.useSelector(({ context: { favorites }}) => {
+  const isFavorited = SeriesDataMachineCtx.useSelector(({ context: { favorites } }) => {
     return favorites[id]?.favorited
   })
+
+  const navigation = useNavigation()
 
   useEffect(() => {
     console.log('MediaObject', { id, isFavorited })
@@ -65,7 +68,7 @@ export function SerieMediaObject ({ id, image, name, rating }: SerieMediaObjectP
             </View>
             <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}>
                 <PressableLink onPress={() => {
-                  console.log('watch now', id)
+                  navigation.navigate('ShowDetails', { seriesId: id })
                 }}>Watch Now</PressableLink>
                 <ToggleFavorite id={id} isFavorite={isFavorited}
                   addFavoriteCallback={addFavoriteCallback}

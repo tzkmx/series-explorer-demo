@@ -1,6 +1,5 @@
-import { View, FlatList, Text } from 'react-native'
-import { styles } from './styles'
-import { TvShow } from './TvShow'
+import { FavoritesList } from '../components/FavoritesList'
+import { SeriesDataMachineCtx } from '../state/series-data-machine'
 
 export type FavoriteShowProps = {
   id: string
@@ -9,20 +8,16 @@ export type FavoriteShowProps = {
   rating: number
 }
 
-type FavoritesScreenProps = {
-  page: number
-  favoriteShows: FavoriteShowProps[]
-}
+export function FavoritesScreen () {
+  const favoriteShows: FavoriteShowProps[] = SeriesDataMachineCtx.useSelector(({ context }) => {
+    const { favorites, favoritesList, commonIndex } = context
+    return favoritesList
+      .filter((favorite) => favorites[favorite]?.favorited && commonIndex[favorite])
+      .map((favorite) => {
+        const { id, name, poster_path: image, vote_average: rating, ...rest } = commonIndex[favorite]
+        return { id, name, image, rating, ...rest }
+      })
+  })
 
-export function FavoritesScreen ({ page, favoriteShows }: FavoritesScreenProps) {
-  return (
-        <View style={styles.container}>
-            <Text>Favorites Screen</Text>
-            <FlatList
-                data={favoriteShows}
-                renderItem={({ item }) => <TvShow name={item.name} image={item.image} rating={item.rating} />}
-                keyExtractor={item => item.id}
-            />
-        </View>
-  )
+  return (<FavoritesList favoriteShows={favoriteShows} />)
 }
